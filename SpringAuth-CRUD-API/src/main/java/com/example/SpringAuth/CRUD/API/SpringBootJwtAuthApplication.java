@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringAuthCrudApiApplication {
+public class SpringBootJwtAuthApplication {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(SpringAuthCrudApiApplication.class, args);
+		SpringApplication.run(SpringBootJwtAuthApplication.class, args);
 	}
 
 }
