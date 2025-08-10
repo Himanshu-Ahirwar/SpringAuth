@@ -3,7 +3,6 @@
 A simple full-stack web application that includes:
 
 - A **Spring Boot backend** with REST APIs for user registration, login, and CRUD operations.
-- A **frontend built using HTML, CSS, and JavaScript** to interact with the backend.
 
 ---
 
@@ -16,12 +15,6 @@ A simple full-stack web application that includes:
 - Hibernate
 - MySQL
 
-### Frontend:
-- HTML
-- CSS
-- JavaScript (Fetch API)
-
----
 
 ## 📁 Project Structure
 
