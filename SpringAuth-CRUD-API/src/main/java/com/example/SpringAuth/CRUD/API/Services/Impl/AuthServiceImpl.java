@@ -9,11 +9,18 @@ import com.example.SpringAuth.CRUD.API.dto.RegisterRequest;
 import com.example.SpringAuth.CRUD.API.dto.UserDto;
 import com.example.SpringAuth.CRUD.API.utils.JwtUtil;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -53,6 +60,40 @@ public class AuthServiceImpl implements AuthService {
         return modelMapper.map(savedUser, UserDto.class);
     }
 
+    // READ ALL
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
+    // READ ONE
+    public UserDto getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    // UPDATE
+    public UserDto updateUser(Long id, UserDto userDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setFullName(userDto.getFullName());
+        user.setEmail(userDto.getEmail());
+        user.setRole(userDto.getRole());
+
+        return modelMapper.map(userRepository.save(user), UserDto.class);
+    }
+
+    // DELETE
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
+
     @Override
     public String login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -60,5 +101,15 @@ public class AuthServiceImpl implements AuthService {
         );
         // If authentication is successful, generate a JWT
         return jwtUtil.generateToken(authentication.getName());
+    }
+
+    public List<User> getUsersByRole(String role) {
+        return userRepository.findUsersByRole(role);
+    }
+
+
+    public Page<User> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
     }
 }
